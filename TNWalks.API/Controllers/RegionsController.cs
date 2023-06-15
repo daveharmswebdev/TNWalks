@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using TNWalks.API.Data;
 using TNWalks.API.Models.Domain;
 using TNWalks.API.Models.Dtos;
+using TNWalks.API.Repositories;
 
 namespace TNWalks.API.Controllers
 {
@@ -16,17 +11,19 @@ namespace TNWalks.API.Controllers
     public class RegionsController : ControllerBase
     {
         private readonly TnWalksDbContext _dbContext;
+        private readonly IRegionRepository _regionRepository;
 
-        public RegionsController(TnWalksDbContext dbContext)
+        public RegionsController(TnWalksDbContext dbContext, IRegionRepository regionRepository)
         {
             _dbContext = dbContext;
+            _regionRepository = regionRepository;
         }
         
         
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var regions = await _dbContext.Regions.ToListAsync();
+            var regions = await _regionRepository.GetAllRegionsAsync();
             var regionDtos = regions.Select(r => new RegionDto
             {
                 Id = r.Id,
@@ -41,7 +38,7 @@ namespace TNWalks.API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> GetRegionById([FromRoute] Guid id)
         {
-            var region = await _dbContext.Regions.FirstOrDefaultAsync(r => r.Id == id);
+            var region = await _regionRepository.GetRegionByIdAsync(id);
 
             if (region == null)
             {
@@ -70,8 +67,7 @@ namespace TNWalks.API.Controllers
                 RegionImageUrl = regionDto.RegionImageUrl
             };
 
-            await _dbContext.Regions.AddAsync(newRegion);
-            await _dbContext.SaveChangesAsync();
+            newRegion = await _regionRepository.CreateRegionAsync(newRegion);
 
             var actionName = nameof(GetRegionById);
             var routeValues = new { id = newRegion.Id };
@@ -92,18 +88,19 @@ namespace TNWalks.API.Controllers
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id,
             [FromBody] CreateRegionDto updateDto)
         {
-            var regionToUpdate = await _dbContext.Regions.FirstOrDefaultAsync(r => r.Id == id);
+            var regionToUpdate = new Region()
+            {
+                Code = updateDto.Code,
+                Name = updateDto.Name,
+                RegionImageUrl = updateDto.RegionImageUrl
+            };
+            
+            regionToUpdate = await _regionRepository.UpdateRegionAsync(id, regionToUpdate);
 
             if (regionToUpdate == null)
             {
                 return NotFound();
             }
-
-            regionToUpdate.Code = updateDto.Code;
-            regionToUpdate.Name = updateDto.Name;
-            regionToUpdate.RegionImageUrl = updateDto.RegionImageUrl;
-
-            await _dbContext.SaveChangesAsync();
 
             var returnDto = new RegionDto
             {
@@ -120,15 +117,12 @@ namespace TNWalks.API.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> DeleteRegion([FromRoute] Guid id)
         {
-            var regionToDelete = await _dbContext.Regions.FirstOrDefaultAsync(r => r.Id == id);
+            var regionToDelete = await _regionRepository.DeleteRegionAsync(id);
 
             if (regionToDelete == null)
             {
                 return NotFound();
             }
-
-            _dbContext.Remove(regionToDelete);
-            await _dbContext.SaveChangesAsync();
             
             var returnDto = new RegionDto
             {
