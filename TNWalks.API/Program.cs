@@ -16,6 +16,7 @@ builder.Services.AddDbContext<TnWalksDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TNWalksConnectionString")));
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 

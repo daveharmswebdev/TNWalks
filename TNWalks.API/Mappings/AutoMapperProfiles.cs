@@ -8,9 +8,16 @@ namespace TNWalks.API.Mappings
     {
         public AutoMapperProfiles()
         {
+            // region mapping
             CreateMap<Region, RegionDto>().ReverseMap();
             CreateMap<CreateRegionDto, Region>();
             CreateMap<UpdateRegionDto, Region>();
+            
+            // walk mapping
+            CreateMap<Walk, WalkDto>().ReverseMap();
+            CreateMap<CreateWalkDto, Walk>();
+
+            CreateMap<Difficulty, DifficultyDto>();
         }
     }
 }
