@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TNWalks.API", "TNWalks.API\TNWalks.API.csproj", "{2E4919F7-EF87-41F3-B572-C179E8F3DDBB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2E4919F7-EF87-41F3-B572-C179E8F3DDBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E4919F7-EF87-41F3-B572-C179E8F3DDBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E4919F7-EF87-41F3-B572-C179E8F3DDBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E4919F7-EF87-41F3-B572-C179E8F3DDBB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
