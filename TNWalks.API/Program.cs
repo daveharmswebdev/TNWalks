@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TNWalks.API.Data;
+using TNWalks.API.Mappings;
 using TNWalks.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +16,8 @@ builder.Services.AddDbContext<TnWalksDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TNWalksConnectionString")));
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 

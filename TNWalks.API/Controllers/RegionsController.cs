@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using TNWalks.API.Data;
 using TNWalks.API.Models.Domain;
@@ -12,11 +13,13 @@ namespace TNWalks.API.Controllers
     {
         private readonly TnWalksDbContext _dbContext;
         private readonly IRegionRepository _regionRepository;
+        private readonly IMapper _mapper;
 
-        public RegionsController(TnWalksDbContext dbContext, IRegionRepository regionRepository)
+        public RegionsController(TnWalksDbContext dbContext, IRegionRepository regionRepository, IMapper mapper)
         {
             _dbContext = dbContext;
             _regionRepository = regionRepository;
+            _mapper = mapper;
         }
         
         
@@ -24,13 +27,7 @@ namespace TNWalks.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var regions = await _regionRepository.GetAllRegionsAsync();
-            var regionDtos = regions.Select(r => new RegionDto
-            {
-                Id = r.Id,
-                Code = r.Code,
-                Name = r.Name,
-                RegionImageUrl = r.RegionImageUrl
-            }).ToList();
+            var regionDtos = _mapper.Map<List<RegionDto>>(regions);
             return Ok(regionDtos);
         }
         
@@ -45,13 +42,7 @@ namespace TNWalks.API.Controllers
                 return NotFound();
             }
 
-            var dto = new RegionDto
-            {
-                Id = region.Id,
-                Code = region.Code,
-                Name = region.Name,
-                RegionImageUrl = region.RegionImageUrl
-            };
+            var dto = _mapper.Map<RegionDto>(region);
             
             return Ok(dto);
         }
@@ -60,25 +51,14 @@ namespace TNWalks.API.Controllers
         public async Task<IActionResult> CreateRegion(
             [FromBody] CreateRegionDto regionDto)
         {
-            var newRegion = new Region
-            {
-                Code = regionDto.Code,
-                Name = regionDto.Name,
-                RegionImageUrl = regionDto.RegionImageUrl
-            };
+            var newRegion = _mapper.Map<Region>(regionDto);
 
             newRegion = await _regionRepository.CreateRegionAsync(newRegion);
 
             var actionName = nameof(GetRegionById);
             var routeValues = new { id = newRegion.Id };
             
-            var returnDto = new RegionDto
-            {
-                Id = newRegion.Id,
-                Code = newRegion.Code,
-                Name = newRegion.Name,
-                RegionImageUrl = newRegion.RegionImageUrl
-            };
+            var returnDto = _mapper.Map<RegionDto>(newRegion);
 
             return CreatedAtAction(actionName, routeValues, returnDto);
         }
@@ -88,12 +68,7 @@ namespace TNWalks.API.Controllers
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id,
             [FromBody] CreateRegionDto updateDto)
         {
-            var regionToUpdate = new Region()
-            {
-                Code = updateDto.Code,
-                Name = updateDto.Name,
-                RegionImageUrl = updateDto.RegionImageUrl
-            };
+            var regionToUpdate = _mapper.Map<Region>(updateDto);
             
             regionToUpdate = await _regionRepository.UpdateRegionAsync(id, regionToUpdate);
 
@@ -102,13 +77,7 @@ namespace TNWalks.API.Controllers
                 return NotFound();
             }
 
-            var returnDto = new RegionDto
-            {
-                Id = regionToUpdate.Id,
-                Code = regionToUpdate.Code,
-                Name = regionToUpdate.Name,
-                RegionImageUrl = regionToUpdate.RegionImageUrl
-            };
+            var returnDto = _mapper.Map<RegionDto>(regionToUpdate);
 
             return Ok(returnDto);
         }
@@ -124,13 +93,7 @@ namespace TNWalks.API.Controllers
                 return NotFound();
             }
             
-            var returnDto = new RegionDto
-            {
-                Id = regionToDelete.Id,
-                Code = regionToDelete.Code,
-                Name = regionToDelete.Name,
-                RegionImageUrl = regionToDelete.RegionImageUrl
-            };
+            var returnDto = _mapper.Map<RegionDto>(regionToDelete);
 
             return Ok(returnDto);
         }
