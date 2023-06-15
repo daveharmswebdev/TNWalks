@@ -16,6 +16,7 @@ namespace TNWalks.API.Mappings
             // walk mapping
             CreateMap<Walk, WalkDto>().ReverseMap();
             CreateMap<CreateWalkDto, Walk>();
+            CreateMap<UpdateWalkDto, Walk>();
 
             CreateMap<Difficulty, DifficultyDto>();
         }
