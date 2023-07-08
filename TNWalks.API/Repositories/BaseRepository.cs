@@ -1,8 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using TNWalks.API.Data;
-using TNWalks.API.Models.Domain;
+using TNWalks.API.Repositories;
+using TNWalks.Domain.Entities;
 
-namespace TNWalks.API.Repositories
+namespace TNWalks.API.Repositoies
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {

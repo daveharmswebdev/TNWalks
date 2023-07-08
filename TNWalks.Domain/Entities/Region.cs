@@ -1,7 +1,4 @@
-using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore;
-
-namespace TNWalks.API.Models.Domain
+namespace TNWalks.Domain.Entities
 {
     public class Region
     {

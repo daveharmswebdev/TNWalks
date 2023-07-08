@@ -1,13 +1,8 @@
-using AutoMapper;
 using FluentValidation;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using TNWalks.API.Exceptions;
-using TNWalks.API.Models.Domain;
 using TNWalks.API.Models.Dtos;
-using TNWalks.API.Repositories;
 using TNWalks.API.Services;
-using TNWalks.API.Validators;
 
 namespace TNWalks.API.Controllers
 {

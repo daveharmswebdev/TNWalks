@@ -1,5 +1,6 @@
 using TNWalks.API.Data;
-using TNWalks.API.Models.Domain;
+using TNWalks.API.Repositoies;
+using TNWalks.Domain.Entities;
 
 namespace TNWalks.API.Repositories
 {

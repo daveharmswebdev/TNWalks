@@ -1,14 +1,12 @@
 using FluentValidation;
 using FluentValidation.Results;
-using Humanizer;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Moq;
 using TNWalks.API.Controllers;
 using TNWalks.API.Exceptions;
-using TNWalks.API.Models.Domain;
 using TNWalks.API.Models.Dtos;
 using TNWalks.API.Services;
+using TNWalks.Domain.Entities;
 
 namespace TNWalks.Test.Controllers
 {

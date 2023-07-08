@@ -24,6 +24,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\TNWalks.API\TNWalks.API.csproj" />
+      <ProjectReference Include="..\TNWalks.Domain\TNWalks.Domain.csproj" />
     </ItemGroup>
 
 </Project>

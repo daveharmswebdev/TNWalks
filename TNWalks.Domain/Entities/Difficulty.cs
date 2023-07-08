@@ -1,4 +1,4 @@
-namespace TNWalks.API.Models.Domain
+namespace TNWalks.Domain.Entities
 {
     public class Difficulty
     {

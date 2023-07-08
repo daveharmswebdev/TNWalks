@@ -1,8 +1,8 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using TNWalks.API.Models.Domain;
 using TNWalks.API.Models.Dtos;
 using TNWalks.API.Repositories;
+using TNWalks.Domain.Entities;
 
 namespace TNWalks.API.Controllers
 {

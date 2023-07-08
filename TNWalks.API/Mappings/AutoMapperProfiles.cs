@@ -1,6 +1,6 @@
 using AutoMapper;
-using TNWalks.API.Models.Domain;
 using TNWalks.API.Models.Dtos;
+using TNWalks.Domain.Entities;
 
 namespace TNWalks.API.Mappings
 {
