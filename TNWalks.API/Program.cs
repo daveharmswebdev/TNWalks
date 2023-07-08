@@ -1,7 +1,13 @@
+using System.Reflection;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using TNWalks.API.Data;
 using TNWalks.API.Mappings;
+using TNWalks.API.Middleware;
+using TNWalks.API.Models.Dtos;
 using TNWalks.API.Repositories;
+using TNWalks.API.Services;
+using TNWalks.API.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +23,9 @@ builder.Services.AddDbContext<TnWalksDbContext>(options =>
 
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
-
+builder.Services.AddScoped<ITodoRepository, TodoRepository>();
+builder.Services.AddScoped<ITodoService, TodoService>();
+builder.Services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
@@ -34,5 +42,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.Run();

@@ -13,9 +13,40 @@ namespace TNWalks.API.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<List<Walk>> GetAllWalks()
+        public async Task<List<Walk>> GetAllWalks(
+            string? filterOn = null, 
+            string? fiilterQuery = null, 
+            string? sortyBy = null, 
+            bool isAscending = true,
+            int pageNumber = 1,
+            int pageSize = 1000)
         {
-            return await _dbContext.Walks.Include("Difficulty").Include("Region").ToListAsync();
+            var walks = _dbContext.Walks.Include("Difficulty").Include("Region").AsQueryable();
+
+            if (string.IsNullOrWhiteSpace(filterOn) == false && string.IsNullOrWhiteSpace(fiilterQuery) == false)
+            {
+                if (filterOn.Equals("Name", StringComparison.OrdinalIgnoreCase))
+                {
+                    walks = walks.Where(x => x.Name.Contains(fiilterQuery));
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(sortyBy) == false)
+            {
+                if (isAscending)
+                {
+                    walks = walks.OrderBy(w => w.Name);
+                }
+                else
+                {
+                    walks = walks.OrderByDescending(w => w.Name);
+                }
+            }
+            
+            // pagination
+            var skipResults = (pageNumber - 1) * pageSize;
+            
+            return await walks.Skip(skipResults).Take(pageSize).ToListAsync();
         }
 
         public async Task<Walk?> GetWalkById(Guid id)

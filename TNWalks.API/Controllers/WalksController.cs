@@ -20,9 +20,16 @@ namespace TNWalks.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<ActionResult<List<WalkDto>>> GetAll(
+            [FromQuery] string? filterOn, 
+            [FromQuery] string? filterQuery,
+            [FromQuery] string? sortyBy,
+            [FromQuery] bool isAscending,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 1000)
         {
-            var walks = await _repository.GetAllWalks();
+            var walks = await _repository.GetAllWalks(
+                filterOn, filterQuery, sortyBy, isAscending, pageNumber, pageSize);
             return Ok(_mapper.Map<List<WalkDto>>(walks));
         }
 
@@ -40,22 +47,40 @@ namespace TNWalks.API.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
         public async Task<IActionResult> CreateWalk([FromBody] CreateWalkDto createWalkDto)
         {
-            var walkToCreate = _mapper.Map<Walk>(createWalkDto);
+            if (ModelState.IsValid)
+            {
+                var walkToCreate = _mapper.Map<Walk>(createWalkDto);
 
-            walkToCreate = await _repository.CreateWalkAsync(walkToCreate);
+                walkToCreate = await _repository.CreateWalkAsync(walkToCreate);
 
-            var returnDto = _mapper.Map<WalkDto>(walkToCreate);
+                var returnDto = _mapper.Map<WalkDto>(walkToCreate);
 
-            return CreatedAtAction(nameof(GetWalkById), new { id = walkToCreate.Id }, returnDto);
+                return CreatedAtAction(nameof(GetWalkById), new { id = walkToCreate.Id }, returnDto);
+            }
+            else
+            {
+                return BadRequest();
+            }
+            
         }
 
         [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateWalk([FromRoute] Guid id,
             [FromBody] UpdateWalkDto updateDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+            
             var walkToUpdate = _mapper.Map<Walk>(updateDto);
 
             walkToUpdate = await _repository.UpdateWalkAsync(id, walkToUpdate);

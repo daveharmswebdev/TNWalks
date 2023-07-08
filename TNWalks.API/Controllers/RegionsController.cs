@@ -1,5 +1,6 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using TNWalks.API.CustomActionFilters;
 using TNWalks.API.Data;
 using TNWalks.API.Models.Domain;
 using TNWalks.API.Models.Dtos;
@@ -48,7 +49,10 @@ namespace TNWalks.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRegion(
+        [ValidateModelAttributes]
+        [ProducesResponseType(201)]
+        [ProducesResponseType(400)]
+        public async Task<ActionResult<RegionDto>> CreateRegion(
             [FromBody] CreateRegionDto regionDto)
         {
             var newRegion = _mapper.Map<Region>(regionDto);
@@ -57,29 +61,39 @@ namespace TNWalks.API.Controllers
 
             var actionName = nameof(GetRegionById);
             var routeValues = new { id = newRegion.Id };
-            
+
             var returnDto = _mapper.Map<RegionDto>(newRegion);
 
             return CreatedAtAction(actionName, routeValues, returnDto);
         }
 
         [HttpPut]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateRegion([FromRoute] Guid id,
             [FromBody] CreateRegionDto updateDto)
         {
-            var regionToUpdate = _mapper.Map<Region>(updateDto);
-            
-            regionToUpdate = await _regionRepository.UpdateRegionAsync(id, regionToUpdate);
-
-            if (regionToUpdate == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var regionToUpdate = _mapper.Map<Region>(updateDto);
+                
+                regionToUpdate = await _regionRepository.UpdateRegionAsync(id, regionToUpdate);
+
+                if (regionToUpdate == null)
+                {
+                    return NotFound();
+                }
+
+                var returnDto = _mapper.Map<RegionDto>(regionToUpdate);
+
+                return Ok(returnDto);
             }
-
-            var returnDto = _mapper.Map<RegionDto>(regionToUpdate);
-
-            return Ok(returnDto);
+            else
+            {
+                return BadRequest(ModelState);
+            }
         }
 
         [HttpDelete]

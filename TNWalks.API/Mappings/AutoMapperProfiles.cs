@@ -19,6 +19,12 @@ namespace TNWalks.API.Mappings
             CreateMap<UpdateWalkDto, Walk>();
 
             CreateMap<Difficulty, DifficultyDto>();
+            
+            // todos mapping
+            CreateMap<Todo, TodoListDto>();
+            CreateMap<Todo, TodoDetailDto>();
+            CreateMap<CreateTodoDto, Todo>();
+            CreateMap<UpdateTodoDto, Todo>();
         }
     }
 }
