@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TNWalks.API.CustomActionFilters;
 using TNWalks.API.Data;
@@ -10,6 +11,7 @@ namespace TNWalks.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RegionsController : ControllerBase
     {
         private readonly TnWalksDbContext _dbContext;

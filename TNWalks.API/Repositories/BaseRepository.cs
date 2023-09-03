@@ -21,6 +21,13 @@ namespace TNWalks.API.Repositoies
             return await _entities.AsNoTracking().ToListAsync();
         }
 
+        public async Task<IEnumerable<T>> GetPagedList(int page, int pageSize)
+        {
+            var itemsToSkip = (page - 1) * pageSize;
+            
+            return await _entities.AsNoTracking().Skip(itemsToSkip).Take(pageSize).ToListAsync();
+        }
+
         public async Task<T?> GetByIdAsync(int id)
         {
             return await _entities.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);

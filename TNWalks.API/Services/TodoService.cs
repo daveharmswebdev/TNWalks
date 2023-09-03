@@ -20,8 +20,23 @@ namespace TNWalks.API.Services
         public async Task<List<TodoListDto>> GetAllTodos()
         {
             var todos = await _todoRepository.GetAllAsync();
+
+            var test = await _todoRepository.GetPagedList(1, 2);
+            
+            
             var todoDtos = _mapper.Map<List<TodoListDto>>(todos);
             return todoDtos;
+        }
+
+        public async Task<PagedList<TodoListDto>> GetPagedTodos(int page, int pageSize)
+        {
+            var todos = await _todoRepository.GetAllAsync();
+            var count = todos.Count;
+            var pagedTodos = await _todoRepository.GetPagedList(page, pageSize);
+
+            var pagedDtos = _mapper.Map<List<TodoListDto>>(pagedTodos);
+
+            return new PagedList<TodoListDto>(pagedDtos, count, page, pageSize);
         }
 
         public async Task<TodoDetailDto> GetTodoById(int id)

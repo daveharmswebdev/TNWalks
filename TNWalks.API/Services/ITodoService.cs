@@ -6,6 +6,7 @@ namespace TNWalks.API.Services
     public interface ITodoService
     {
         Task<List<TodoListDto>> GetAllTodos();
+        Task<PagedList<TodoListDto>> GetPagedTodos(int page, int pageSize);
         Task<TodoDetailDto> GetTodoById(int id);
         Task<TodoDetailDto> CreateTodo(CreateTodoDto createTodoDto);
         Task UpdateTodo(int id, UpdateTodoDto updateTodoDto);

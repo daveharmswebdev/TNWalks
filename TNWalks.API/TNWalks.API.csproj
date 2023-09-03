@@ -12,6 +12,8 @@
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
         <PackageReference Include="FluentValidation" Version="11.5.2" />
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.7">
           <PrivateAssets>all</PrivateAssets>
@@ -22,12 +24,19 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="7.0.0-preview" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.7" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.0-preview" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\TNWalks.Domain\TNWalks.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="extensions\" />
+      <Folder Include="Models\Requests\" />
     </ItemGroup>
 
 </Project>

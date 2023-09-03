@@ -1,5 +1,6 @@
 using AutoMapper;
 using TNWalks.API.Models.Dtos;
+using TNWalks.API.Models.Models;
 using TNWalks.Domain.Entities;
 
 namespace TNWalks.API.Mappings
@@ -25,6 +26,9 @@ namespace TNWalks.API.Mappings
             CreateMap<Todo, TodoDetailDto>();
             CreateMap<CreateTodoDto, Todo>();
             CreateMap<UpdateTodoDto, Todo>();
+            
+            // address mapping
+            CreateMap<Address, AddressModel>();
         }
     }
 }

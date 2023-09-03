@@ -25,6 +25,15 @@ namespace TNWalks.API.Controllers
         }
 
         [HttpGet]
+        [Route("paged")]
+        public async Task<ActionResult<PagedList<TodoListDto>>> GetPagedTodos([FromQuery] int page = 1, [FromQuery] int pageSize = 2)
+        {
+            var todoDtos = await _todoService.GetPagedTodos(page, pageSize);
+            return Ok(todoDtos);
+        }
+
+
+        [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
         [Route("{id:int}")]

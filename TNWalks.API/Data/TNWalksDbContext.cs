@@ -5,17 +5,19 @@ namespace TNWalks.API.Data
 {
     public class TnWalksDbContext : DbContext
     {
-        public TnWalksDbContext(DbContextOptions dbContextOptions): base(dbContextOptions)
+        public TnWalksDbContext(DbContextOptions<TnWalksDbContext> dbContextOptions): base(dbContextOptions)
         { }
 
-        public DbSet<Difficulty> Difficulties { get; set; }
-        public DbSet<Region> Regions { get; set; }
-        public DbSet<Walk> Walks { get; set; }
-        public DbSet<Todo> Todos { get; set; }
+        public DbSet<Difficulty> Difficulties { get; set; } = null!;
+        public DbSet<Region> Regions { get; set; } = null!;
+        public DbSet<Walk> Walks { get; set; } = null!;
+        public DbSet<Todo> Todos { get; set; } = null!;
+        public DbSet<Person> Persons { get; set; } = null!;
+        public DbSet<Address> Addresses { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            base.OnModelCreating(modelBuilder); 
 
             var difficulties = new List<Difficulty>()
             {
