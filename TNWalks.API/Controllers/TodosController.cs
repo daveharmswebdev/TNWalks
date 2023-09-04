@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using TNWalks.API.Exceptions;
 using TNWalks.API.Models.Dtos;
 using TNWalks.API.Services;
+using TNWalks.Domain.Entities;
 
 namespace TNWalks.API.Controllers
 {
@@ -23,16 +24,21 @@ namespace TNWalks.API.Controllers
             var todoDtos = await _todoService.GetAllTodos();
             return Ok(todoDtos);
         }
-
+        
         [HttpGet]
         [Route("paged")]
-        public async Task<ActionResult<PagedList<TodoListDto>>> GetPagedTodos([FromQuery] int page = 1, [FromQuery] int pageSize = 2)
+        public async Task<ActionResult<List<TodoListDto>>> GetPagedTodos(
+            int page = 1, 
+            int pageSize = 10,
+            string search = "",
+            string sortBy = "",
+            bool isAscending = true,
+            TodoStatus? status = null)
         {
-            var todoDtos = await _todoService.GetPagedTodos(page, pageSize);
+            var todoDtos = await _todoService.GetPagedTodos(page, pageSize, search, sortBy, isAscending, status);
             return Ok(todoDtos);
         }
-
-
+        
         [HttpGet]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]

@@ -1,5 +1,7 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using TNWalks.API.Exceptions;
+using TNWalks.API.Models;
 using TNWalks.API.Models.Dtos;
 using TNWalks.API.Repositories;
 using TNWalks.Domain.Entities;
@@ -21,23 +23,97 @@ namespace TNWalks.API.Services
         {
             var todos = await _todoRepository.GetAllAsync();
 
-            var test = await _todoRepository.GetPagedList(1, 2);
-            
-            
             var todoDtos = _mapper.Map<List<TodoListDto>>(todos);
             return todoDtos;
         }
 
-        public async Task<PagedList<TodoListDto>> GetPagedTodos(int page, int pageSize)
+        public async Task<PagedList<TodoListDto>> GetPagedTodos(int page, int pageSize, string search = "", string sortBy = "", bool isAscending = true, TodoStatus? status = null)
         {
-            var todos = await _todoRepository.GetAllAsync();
-            var count = todos.Count;
-            var pagedTodos = await _todoRepository.GetPagedList(page, pageSize);
+            var todosQuery = await _todoRepository.GetQueryable();
 
-            var pagedDtos = _mapper.Map<List<TodoListDto>>(pagedTodos);
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                todosQuery = todosQuery.Where(todo =>
+                    EF.Functions.Like(todo.Title, $"%{search}%") ||
+                    EF.Functions.Like(todo.Description, $"%{search}%"));
+            }
 
-            return new PagedList<TodoListDto>(pagedDtos, count, page, pageSize);
+            if (status.HasValue)
+            {
+                todosQuery = todosQuery.Where(todo => todo.Status == status.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(sortBy))
+            {
+                switch (sortBy.ToLower())
+                {
+                    case "title":
+                        todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.Title) : todosQuery.OrderByDescending(todo => todo.Title);
+                        break;
+                    case "createdat":
+                        todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.CreatedAt) : todosQuery.OrderByDescending(todo => todo.CreatedAt);
+                        break;
+                    default:
+                        todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.CreatedAt) : todosQuery.OrderByDescending(todo => todo.CreatedAt);
+                        break;
+                }
+            }
+
+            var totalCount = await todosQuery.CountAsync();
+
+            var todoDtos = await todosQuery
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(todo => _mapper.Map<TodoListDto>(todo))
+                .ToListAsync();
+
+            return new PagedList<TodoListDto>(todoDtos, page, pageSize, totalCount);
         }
+        
+        
+        // public async Task<PagedList<TodoListDto>> GetPagedTodos(int page, int pageSize, string search = "", string sortBy = "", TodoStatus? status = null, bool isAscending = true)
+        // {
+        //     var todosQuery = await _todoRepository.GetQueryable();
+        //
+        //     if (!string.IsNullOrWhiteSpace(search))
+        //     {
+        //         todosQuery = todosQuery.Where(todo =>
+        //             EF.Functions.Like(todo.Title, $"%{search}%") ||
+        //             EF.Functions.Like(todo.Description, $"%{search}%"));
+        //     }
+        //
+        //     if (status.HasValue)
+        //     {
+        //         todosQuery = todosQuery.Where(todo => todo.Status == status.Value);
+        //     }
+        //
+        //     if (!string.IsNullOrWhiteSpace(sortBy))
+        //     {
+        //         switch (sortBy.ToLower())
+        //         {
+        //             case "title":
+        //                 todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.Title) : todosQuery.OrderByDescending(todo => todo.Title);
+        //                 break;
+        //             case "createdat":
+        //                 todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.CreatedAt) : todosQuery.OrderByDescending(todo => todo.CreatedAt);
+        //                 break;
+        //             default:
+        //                 todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.CreatedAt) : todosQuery.OrderByDescending(todo => todo.CreatedAt);
+        //                 break;
+        //         }
+        //     }
+        //
+        //     var totalCount = await todosQuery.CountAsync();
+        //
+        //     var todoDtos = await todosQuery
+        //         .Skip((page - 1) * pageSize)
+        //         .Take(pageSize)
+        //         .Select(todo => _mapper.Map<TodoListDto>(todo))
+        //         .ToListAsync();
+        //
+        //     return new PagedList<TodoListDto>(todoDtos, page, pageSize, totalCount);
+        // }
+
 
         public async Task<TodoDetailDto> GetTodoById(int id)
         {

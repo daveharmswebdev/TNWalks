@@ -1,9 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using TNWalks.API.Data;
-using TNWalks.API.Repositories;
 using TNWalks.Domain.Entities;
 
-namespace TNWalks.API.Repositoies
+namespace TNWalks.API.Repositories
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : BaseEntity
     {
@@ -16,16 +15,14 @@ namespace TNWalks.API.Repositoies
             _entities = context.Set<T>();
         }
 
+        public async Task<IQueryable<T>> GetQueryable()
+        {
+            return await Task.FromResult(_entities.AsNoTracking());
+        }
+
         public async Task<IReadOnlyList<T>> GetAllAsync()
         {
             return await _entities.AsNoTracking().ToListAsync();
-        }
-
-        public async Task<IEnumerable<T>> GetPagedList(int page, int pageSize)
-        {
-            var itemsToSkip = (page - 1) * pageSize;
-            
-            return await _entities.AsNoTracking().Skip(itemsToSkip).Take(pageSize).ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(int id)
