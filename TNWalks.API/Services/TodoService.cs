@@ -47,6 +47,9 @@ namespace TNWalks.API.Services
             {
                 switch (sortBy.ToLower())
                 {
+                    case "id":
+                        todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.Id) : todosQuery.OrderByDescending(todo => todo.Id);
+                        break;
                     case "title":
                         todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.Title) : todosQuery.OrderByDescending(todo => todo.Title);
                         break;
@@ -54,7 +57,7 @@ namespace TNWalks.API.Services
                         todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.CreatedAt) : todosQuery.OrderByDescending(todo => todo.CreatedAt);
                         break;
                     default:
-                        todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.CreatedAt) : todosQuery.OrderByDescending(todo => todo.CreatedAt);
+                        todosQuery = isAscending ? todosQuery.OrderBy(todo => todo.Id) : todosQuery.OrderByDescending(todo => todo.Id);
                         break;
                 }
             }
