@@ -13,5 +13,6 @@ namespace TNWalks.API.Services
         Task<TodoDetailDto> CreateTodo(CreateTodoDto createTodoDto);
         Task UpdateTodo(int id, UpdateTodoDto updateTodoDto);
         Task DeleteTodo(int id);
+        Task<List<TodoDropdownDto>> GetDropdowns(string search = "");
     }
 }

@@ -26,6 +26,14 @@ namespace TNWalks.API.Controllers
         }
         
         [HttpGet]
+        [Route("dropdowns")]
+        public async Task<ActionResult<List<TodoDropdownDto>>> GetDropdowns([FromQuery] string search = "")
+        {
+            var todoDtos = await _todoService.GetDropdowns(search);
+            return Ok(todoDtos);
+        }
+
+        [HttpGet]
         [Route("paged")]
         public async Task<ActionResult<List<TodoListDto>>> GetPagedTodos(
             int page = 1, 

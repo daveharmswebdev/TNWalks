@@ -160,5 +160,21 @@ namespace TNWalks.API.Services
 
             await _todoRepository.DeleteAsync(todo);
         }
+
+        public async Task<List<TodoDropdownDto>> GetDropdowns(string search = "")
+        {
+            var todosQuery = await _todoRepository.GetQueryable();
+                
+            var todos = todosQuery.Where(todo => EF.Functions.Like(todo.Title, $"%{search}%"))
+                .Select(todo => new TodoDropdownDto
+                {
+                    Id = todo.Id,
+                    Title = todo.Title
+                })
+                .Take(20)
+                .ToListAsync();
+            
+            return await todos;
+        }
     }
 }
